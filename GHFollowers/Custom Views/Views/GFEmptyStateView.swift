@@ -41,7 +41,7 @@ class GFEmptyStateView: UIView {
         messageLabel.numberOfLines = 3
         messageLabel.textColor     = .secondaryLabel
         
-        let labelCenterYConstant: CGFloat = DeviceType.isiPhoneSE || DeviceType.isiPhone8Zoomed || DeviceType.isiPhone8Standard || DeviceType.isiPhone8PlusZoomed ? -80 : -150
+        let labelCenterYConstant: CGFloat = DeviceType.isiPhoneSE || DeviceType.isiPhone8Zoomed || DeviceType.isiPhone8Standard || DeviceType.isiPhone8PlusZoomed ? -120 : -150
         
         NSLayoutConstraint.activate([
             messageLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: labelCenterYConstant),
