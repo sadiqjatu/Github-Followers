@@ -27,14 +27,18 @@ class FollowerCell: UICollectionViewCell {
     
     
     func set(follower: Follower) {
-        if #available(iOS 16.0, *) {
-            contentConfiguration = UIHostingConfiguration {
-                FollowerView(follower: follower)
-            }
-        } else {
-            // Fallback on earlier versions
-            usernameLabel.text = follower.login
-            avatarImageView.downloadAvatarImage(fromURL: follower.avatarUrl)        //Caching is used which is more optimized
+//        if #available(iOS 16.0, *) {
+//            contentConfiguration = UIHostingConfiguration {
+//                FollowerView(follower: follower)
+//            }
+//        } else {
+//            // Fallback on earlier versions
+//            usernameLabel.text = follower.login
+//            avatarImageView.downloadAvatarImage(fromURL: follower.avatarUrl)        //Caching is used which is more optimized
+//        }
+        
+        contentConfiguration = UIHostingConfiguration {
+            FollowerView(follower: follower)
         }
     }
     

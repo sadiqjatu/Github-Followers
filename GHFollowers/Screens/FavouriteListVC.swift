@@ -26,6 +26,19 @@ class FavouriteListVC: GFDataLoadingVC {
     }
     
     
+    override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        if favorites.isEmpty {
+            var config = UIContentUnavailableConfiguration.empty()
+            config.image = SFSymbols.hollowStar
+            config.text  = "No Favorites"
+            config.secondaryText = "Add a favorite on the follower list screen"
+            contentUnavailableConfiguration = config
+        } else {
+            contentUnavailableConfiguration = nil
+        }
+    }
+    
+    
     func configureViewController() {
         view.backgroundColor = .systemBackground
         title                = "Favorites"
@@ -70,31 +83,27 @@ class FavouriteListVC: GFDataLoadingVC {
     
     
     func updateUI(favorites: [Follower]) {
-        if favorites.isEmpty {
-            self.updateEmptyState()
-        } else {
-            self.favorites = favorites
-            DispatchQueue.main.async {
-                self.removeEmptyStateIfNeeded()
-                self.tableView.reloadData()
-                self.view.bringSubviewToFront(self.tableView)  //Not needed but for safety its good
-            }
+        self.favorites = favorites
+        setNeedsUpdateContentUnavailableConfiguration()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.view.bringSubviewToFront(self.tableView)  //Not needed but for safety its good
         }
     }
     
     
-    func updateEmptyState() {
-        removeEmptyStateIfNeeded()
-        
-        self.showEmptyStateView(with: "No Favorites?\nAdd one on the follower screen.", in: self.view)
-    }
+//    func updateEmptyState() {
+//        removeEmptyStateIfNeeded()
+//        
+//        self.showEmptyStateView(with: "No Favorites?\nAdd one on the follower screen.", in: self.view)
+//    }
     
     
-    func removeEmptyStateIfNeeded() {
-        view.subviews
-            .filter { $0 is GFEmptyStateView }
-            .forEach { $0.removeFromSuperview() }
-    }
+//    func removeEmptyStateIfNeeded() {
+//        view.subviews
+//            .filter { $0 is GFEmptyStateView }
+//            .forEach { $0.removeFromSuperview() }
+//    }
 }
 
 
@@ -132,15 +141,11 @@ extension FavouriteListVC: UITableViewDelegate, UITableViewDataSource {
             guard let error else {
                 favorites.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .left)
+                setNeedsUpdateContentUnavailableConfiguration()
                 return                      // No more animation needed, the left swipe animation is enough
             }
             
             self.presentGFAlertOnMainThread(title: "Unable to remove", message: error.rawValue, buttonTitle: "Ok")
-        }
-        
-        if favorites.isEmpty {
-            updateEmptyState()
-            return
         }
     }
 }

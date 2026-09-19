@@ -43,3 +43,8 @@ class GFButton: UIButton {
         configuration?.imagePlacement = .leading
     }
 }
+
+
+#Preview{
+    GFButton(backgroundColor: .blue, title: "Test", systemImageName: "pencil")
+}

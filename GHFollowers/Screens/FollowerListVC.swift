@@ -51,6 +51,21 @@ class FollowerListVC: GFDataLoadingVC {
     }
     
     
+    override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        if followers.isEmpty && !isLoadingMoreFollowers {
+            var config = UIContentUnavailableConfiguration.empty()
+            config.image = SFSymbols.personSlash
+            config.text  = "No Followers"
+            config.secondaryText = "This user has no followers, Go follow them!"
+            contentUnavailableConfiguration = config
+        } else if isSearching && filteredFollowers.isEmpty {
+            contentUnavailableConfiguration = UIContentUnavailableConfiguration.search()
+        } else {
+            contentUnavailableConfiguration = nil
+        }
+    }
+    
+    
     func configureViewController() {
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -115,11 +130,12 @@ class FollowerListVC: GFDataLoadingVC {
         if followers.count < 100 { hasMoreFollowers = false }
         self.followers.append(contentsOf: followers)
         
-        if self.followers.isEmpty {         // return empty state only when array is empty not the response array
-            let message = "This user doesn't have any followers. Go follow them 😀."
-            DispatchQueue.main.async { self.showEmptyStateView(with: message, in: self.view) }
-            return
-        }
+//        if self.followers.isEmpty {         // return empty state only when array is empty not the response array
+//            let message = "This user doesn't have any followers. Go follow them 😀."
+//            DispatchQueue.main.async { self.showEmptyStateView(with: message, in: self.view) }
+//            return
+//        }
+        setNeedsUpdateContentUnavailableConfiguration()
         self.updateData(on: self.followers)
     }
     
@@ -177,7 +193,7 @@ extension FollowerListVC: UICollectionViewDelegate {
         let height        = collectionView.frame.size.height
         
         if offsetY > contentHeight - height {
-            guard hasMoreFollowers, !isLoadingMoreFollowers, !isSearching else { return } //edge case: Do not make network call when followers count<100 and
+            guard hasMoreFollowers, !isLoadingMoreFollowers, !isSearching else { return } //edge case: Do not make network call when followers count<100 and is loading more followers and is searching (Just flip the Flag)
             page += 1
             getFollowers(username: username, page: page)
         }
@@ -205,11 +221,13 @@ extension FollowerListVC: UISearchResultsUpdating {
             filteredFollowers.removeAll()
             updateData(on: followers)
             isSearching = false
+            setNeedsUpdateContentUnavailableConfiguration()
             return
         }
         isSearching = true
         filteredFollowers = followers.filter({ $0.login.lowercased().contains(filteredText.lowercased()) })
         updateData(on: filteredFollowers)
+        setNeedsUpdateContentUnavailableConfiguration()
     }
 }
 

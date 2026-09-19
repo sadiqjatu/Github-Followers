@@ -16,14 +16,16 @@ enum SFSymbols {
     static let followers       = UIImage(systemName: "person.2")
     static let magnifyingGlass = UIImage(systemName: "magnifyingglass")
     static let star            = UIImage(systemName: "star.fill")
+    static let hollowStar      = UIImage(systemName: "star")
+    static let personSlash     = UIImage(systemName: "person.slash")
 }
 
 
 enum Images {
     
-    static let ghLogo      = UIImage(named: "gh-logo")
-    static let placeholder = UIImage(named: "avatar-placeholder")
-    static let emptyState  = UIImage(named: "empty-state-logo")
+    static let ghLogo      = UIImage(resource: .ghLogo)
+    static let placeholder = UIImage(resource: .avatarPlaceholder)
+    static let emptyState  = UIImage(resource: .emptyStateLogo)
 }
 
 
